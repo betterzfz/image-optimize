@@ -1,4 +1,8 @@
 <?php
+    /*
+     * a php class for handling image
+     * @stone
+     */
     class ImageClass {
         /*
          * resample the image
@@ -9,7 +13,7 @@
          * @param $dest_height the height of the destination image, default 0, the height of the destination image will equal to the height of the source image when this parameter is less than or equal to 0 if parameter flag equal to 0.
          * @param $flag the flag of this function's behavior, default 0.  this parameter will be ignored when dest_width and dest_height are both greater than 0. the possbile values:
          * 0-no behavior
-         * 1-will generate a equal scaling destination image based on dest_width or dest_height when dest_width or dest_height is greater than 0.
+         * 1-will generate a equal scaling destination image based on dest_width and dest_height.
          * @stone
          */
         public function resampleImage ($source_name, $dest_name = '', $quality = 100, $dest_width = 0, $dest_height = 0, $flag = 0) {
@@ -47,6 +51,12 @@
                         $dest_height = round(($dest_width / $image_info[0]) * $image_info[1]);
                     } else if ($dest_width <= 0 && $dest_height > 0) {
                         $dest_width = round(($dest_height / $image_info[1]) * $image_info[0]);
+                    } else {
+                        if ($image_info[0] * $dest_width > $image_info[1] * $dest_height) {
+                            $dest_width = round(($dest_height / $image_info[1]) * $image_info[0]);
+                        } else {
+                            $dest_height = round(($dest_width / $image_info[0]) * $image_info[1]);
+                        }
                     }
                 } else {
                     $dest_width = $dest_width > 0 ? $dest_width : $image_info[0];

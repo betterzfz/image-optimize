@@ -10,20 +10,39 @@
          */
         public function readFileFromDirectoryNoDepth ($directory, $flag = 0) {
             $files = [];
-            $dir_path = realpath($directory);
-            $file_names = scandir($directory);
-            foreach ($file_names as $file_name) {
-                if ($file_name == '.' || $file_name == '..') {
-                    continue;
-                }
-                $file = $dir_path.DIRECTORY_SEPARATOR.$file_name;
-                if (is_dir($file)) {
-                    return ['code' => -1, 'message' => $directory.' has child directory'];
-                } else {
-                    if ($flag == 1) {
-                        $files[] = ['absolute_path_name' => $file, 'name' => $file_name];
+            if (preg_match('/^https?:\/\/[\w.]+[\w\/]*[\w.]*\??[\w=&\+\%]*/is', $directory)) {
+                $url_dir = opendir($directory);
+                while (false !== ($file_name = readdir($url_dir))) {
+                    if ($file_name == '.' || $file_name == '..') {
+                        continue;
+                    }
+                    $file = $directory.'/'.$file_name;
+                    if (is_dir($file)) {
+                        return ['code' => -1, 'message' => $directory.' has child directory'];
                     } else {
-                        $files[] = $file;
+                        if ($flag == 1) {
+                            $files[] = ['absolute_path_name' => $file, 'name' => $file_name];
+                        } else {
+                            $files[] = $file;
+                        }
+                    }
+                }
+            } else {
+                $dir_path = realpath($directory);
+                $file_names = scandir($directory);
+                foreach ($file_names as $file_name) {
+                    if ($file_name == '.' || $file_name == '..') {
+                        continue;
+                    }
+                    $file = $dir_path.DIRECTORY_SEPARATOR.$file_name;
+                    if (is_dir($file)) {
+                        continue;
+                    } else {
+                        if ($flag == 1) {
+                            $files[] = ['absolute_path_name' => $file, 'name' => $file_name];
+                        } else {
+                            $files[] = $file;
+                        }
                     }
                 }
             }

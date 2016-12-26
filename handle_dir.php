@@ -24,31 +24,13 @@
         require_once('./library/ImageClass.php');
         $image_object = new ImageClass;
         $destination_directory = realpath($_POST['destination_directory']);
+        file_put_contents('./batch_data.txt', json_encode($files['data']));
         $file_count = count($files['data']);
         $redis = new Redis();
         $redis->connect('127.0.0.1', 6379);
-        $redis->mSet(['file_count' => $file_count, 'handled_count' => 0, 'success_count' => 0, 'failure_count' => 0]);
-        foreach ($files['data'] as $file) {
-            $resample_res = $image_object->resampleImage($file['absolute_path_name'], $destination_directory.DIRECTORY_SEPARATOR.$file['name'], $_POST['quality'], $_POST['dest_width'], $_POST['dest_height'], $_POST['flag']);
-            if ($resample_res['code'] == 0) {
-                $redis->incr('handled_count');
-                $redis->incr('success_count');
-            } else {
-                file_put_contents('./log.txt', date('Y-m-d H:i:s').':'.json_encode($resample_res)."\n", FILE_APPEND);
-                $redis->incr('handled_count');
-                $redis->incr('failure_count');
-            }
-        }
-        $count_data = $redis->mGet(['handled_count', 'success_count', 'failure_count']);
-        $result_data = [
-            'file_count' => $file_count,
-            'handled_count' =>  $count_data['handled_count'],
-            'success_count' =>  $count_data['success_count'],
-            'failure_count' =>  $count_data['failure_count']
-        ];
-        $redis->delete(['file_count', 'handled_count', 'success_count', 'failure_count']);
+        $redis->mSet(['total_file_count' => $file_count, 'total_handled_count' => 0, 'total_success_count' => 0, 'total_failure_count' => 0]);
         $redis->close();
-        echo json_encode(['code' => 0, 'message' => 'handle over', 'data' => $result_data]);exit;
+        echo json_encode(['code' => 0, 'message' => 'handle out', 'data' => ['file_count' => $file_count, 'batch_number' => ceil($file_count / $_POST['once_number'])]]);exit;
     } else {
         echo json_encode($files);exit;
     }

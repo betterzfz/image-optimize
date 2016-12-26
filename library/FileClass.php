@@ -1,6 +1,10 @@
 <?php
+    /**
+     * a php class for handling file
+     * @stone
+     */
     class FileClass {
-        /*
+        /**
          * read file from directory no depth
          * @param $directory the directory from which to read files.
          * @param $flag the flag of this function's behavior, default 0. the possbile values:
@@ -47,5 +51,29 @@
                 }
             }
             return ['code' => 0, 'message' => 'read file successfully', 'data' => $files];
+        }
+
+        /**
+         * delete file from directory and child directory with file name.
+         * @param $directory delete file from this directory.
+         * @param $name the name of the file to delete.
+         * @stone
+         */
+        public function deleteFileDepth ($directory, $name) {
+            $delete_result = [];
+            $dir_path = realpath($directory);
+            $file_names = scandir($directory);
+            foreach ($file_names as $file_name) {
+                if ($file_name == '.' || $file_name == '..') {
+                    continue;
+                }
+                $file = $dir_path.DIRECTORY_SEPARATOR.$file_name;
+                if (is_dir($file)) {
+                    deleteFileDepth($file, $name);
+                } else {
+                    $delete_result[] = ['name' => $file, 'result' => unlink($file)];
+                }
+            }
+            return $delete_result;
         }
     }

@@ -1,10 +1,10 @@
 <?php
-    /*
+    /**
      * a php class for handling image
      * @stone
      */
     class ImageClass {
-        /*
+        /**
          * resample the image
          * @param $source_name the source image name which may include directory.
          * @param $source_name the destination image name which may include directory, default '', destination image will override the source image when this parameter is empty.

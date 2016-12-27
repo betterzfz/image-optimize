@@ -69,10 +69,14 @@
                 }
                 $file = $dir_path.DIRECTORY_SEPARATOR.$file_name;
                 if (is_dir($file)) {
-                    deleteFileDepth($file, $name);
-                } else {
-                    $delete_result[] = ['name' => $file, 'result' => unlink($file)];
+                    $delete_result = $this->deleteFileDepth($file, $name);
                 }
+            }
+            $this_file_name = $dir_path.DIRECTORY_SEPARATOR.$name;
+            if (file_exists($this_file_name)) {
+                $delete_result[] = ['name' => $this_file_name, 'delete_result' => unlink($this_file_name)];
+            } else {
+                $delete_result[] = ['name' => $this_file_name, 'delete_result' => 'file is not exists'];
             }
             return $delete_result;
         }

@@ -37,17 +37,17 @@
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
-                        <li class="active"><a href="/">for directory</a></li>
-                        <li><a href="./for_file.php">for file</a></li>
+                        <li><a href="/">for directory</a></li>
+                        <li class="active"><a href="./for_file.php">for file</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="page-header">for directory</h1>
-                    <form class="form-horizontal" id="directory-form">
+                    <h1 class="page-header">for file</h1>
+                    <form class="form-horizontal" id="file-form">
                         <div class="form-group">
-                            <label for="source-directory" class="col-sm-2 control-label">source directory</label>
+                            <label for="source-file" class="col-sm-2 control-label">source file</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="source-directory" name="source_directory" placeholder="source directory" />
+                                <input type="text" class="form-control" id="source-file" name="source_file" placeholder="source file" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -84,29 +84,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="once-number" class="col-sm-2 control-label">once number</label>
-                            <div class="col-sm-10">
-                                <input type="number" class="form-control" id="once-number" name="once_number" value="5000" min="1" />
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                             <button type="button" class="btn btn-primary" id="submit">submit</button>
                             </div>
                         </div>
                     </form>
                     <div class="row" id="info">
-                    </div>
-                    <div class="row" id="total-report" style="display: none">
-                        <div class="col-sm-2">total file count:<span id="total-file-count"></span></div>
-                        <div class="col-sm-2">total handled count:<span id="total-handled-count"></span></div>
-                        <div class="col-sm-2">total success count:<span id="total-success-count"></span></div>
-                        <div class="col-sm-2">total failure count:<span id="total-failure-count"></span></div>
-                        <div class="col-sm-2">total batch number:<span id="total-batch-number"></span></div>
-                        <div class="col-sm-2">current batch number:<span id="current-batch-number"></span></div>
-                    </div>
-                    <div class="row" id="total-progress">
-                        
                     </div>
                 </div>
             </div>
@@ -119,33 +102,29 @@
         <script type="text/javascript">
             $(() => {
                 $('#submit').click(function () {
-                    $(this).attr('disabled', 'disabled');
-                    $(this).html('submitting...');
+                    const this_element = $(this);
+                    this_element.attr('disabled', 'disabled');
+                    this_element.html('submitting...');
                     $('#info').html('');
                     $.ajax({
-                        url: './handle_dir.php',
+                        url: './handle_file.php',
                         type: 'post',
-                        data: $('#directory-form').serialize(),
+                        data: $('#file-form').serialize(),
                         dataType: 'json',
                         success: data => {
                             if (data.code == 0) {
-                                $('#total-file-count').html(data.data.file_count);
-                                $('#total-batch-number').html(data.data.batch_number);
-                                $('#total-report').show();
-                                let total_progress_html = '';
-                                for (let i = 1; i <= data.data.batch_number; i++) {
-                                    total_progress_html +=  '<div class="progress" id="progress-' + i + '">' +
-                                                                '<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>' +
-                                                            '</div>';
-                                }
-                                $('#total-progress').html(total_progress_html);
-                                ajax_batch_progress(1, data.data.batch_number);
+                                $('#info').html('<div class="alert alert-success alert-dismissible" role="alert">' +
+                                                    '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+                                                    '<strong>Success!</strong> ' + data.message +
+                                                '</div>');
                             } else {
                                 $('#info').html('<div class="alert alert-danger alert-dismissible" role="alert">' +
                                                     '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
                                                     '<strong>Warning!</strong> ' + data.message +
                                                 '</div>');
                             }
+                            this_element.html('submitting');
+                            this_element.attr('disabled', false);
                         },
                         error: (XMLHttpRequest, textStatus, errorThrown) => {
                             console.log(XMLHttpRequest);
@@ -154,63 +133,7 @@
                         }
                     });
                 });
-                const progress_interval = setInterval(() => {
-                    $.ajax({
-                        url: './progress.php',
-                        type: 'post',
-                        data: { current_batch_number : $('#current-batch-number').html(), once_number : $('#once-number').val(), total_batch_number : $('#total-batch-number').html() },
-                        dataType: 'json',
-                        success: data => {
-                            if (data.code == 0) {
-                                $('#total-handled-count').html(data.data.total_handled_count);
-                                $('#total-success-count').html(data.data.total_success_count);
-                                $('#total-failure-count').html(data.data.total_failure_count);
-                                $('#progress-' + data.data.current_batch_number).find('div').css('width', data.data.progress + '%');
-                            } else {
-                                console.log(data.message);
-                            }
-                        },
-                        error: (XMLHttpRequest, textStatus, errorThrown) => {
-                            console.log(XMLHttpRequest);
-                            console.log(textStatus);
-                            console.log(errorThrown);
-                        }
-                    });
-                }, 1000);
             });
-            
-            let ajax_batch_progress = (current_batch_number, total_batch_number) => {
-                $('#current-batch-number').html(current_batch_number);
-                $.ajax({
-                    url: './batch_progress.php',
-                    type: 'post',
-                    data: $('#directory-form').serialize(),
-                    dataType: 'json',
-                    success: data => {
-                        if (data.code == 0) {
-                            if (current_batch_number == total_batch_number) {
-                                $('#info').html('<div class="alert alert-success alert-dismissible" role="alert">' +
-                                                    '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
-                                                    '<strong>Success!</strong> ' + data.message + '.' +
-                                                '</div>');
-                                
-                                $('#submit').html('submitting');
-                                $('#submit').attr('disabled', false);
-                            } else {
-                                $('#progress-' + current_batch_number).find('div').css('width', '100%');
-                                ajax_batch_progress(++current_batch_number, total_batch_number);
-                            }
-                        } else {
-                            alert(data.message);
-                        }
-                    },
-                    error: (XMLHttpRequest, textStatus, errorThrown) => {
-                        console.log(XMLHttpRequest);
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                    }
-                });
-            }
         </script>
     </body>
 </html>

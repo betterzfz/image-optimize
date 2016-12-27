@@ -21,9 +21,6 @@
     $file_object = new FileClass;
     $files = $file_object->readFileFromDirectoryNoDepth($_POST['source_directory'], 1);
     if ($files['code'] == 0) {
-        require_once('./library/ImageClass.php');
-        $image_object = new ImageClass;
-        $destination_directory = realpath($_POST['destination_directory']);
         file_put_contents('./batch_data.txt', json_encode($files['data']));
         $file_count = count($files['data']);
         $redis = new Redis();

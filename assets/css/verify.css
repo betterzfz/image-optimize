@@ -1,0 +1,21 @@
+body {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+.form-verify {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-verify .form-verify-heading {
+    margin-bottom: 10px;
+}
+.form-verify-heading {
+	text-align: center;
+}
+.form-verify input {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}

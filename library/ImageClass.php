@@ -4,6 +4,9 @@
      * @stone
      */
     class ImageClass {
+
+        public $font = './assets/fonts/times_new_yorker.ttf'; // the type of font
+
         /**
          * resample the image
          * @param $source_name the source image name which may include directory.
@@ -87,5 +90,77 @@
                     'message' => 'unknown or not be supported image mime'
                 ];
             }
+        }
+
+        public function generate_captcha_image ($width, $height, $code) {
+            $font_size = $height * 0.5; 
+            $image = imagecreate($width, $height) or die('Cannot initialize new GD image stream'); 
+
+            $background_red = mt_rand(0, 255);
+            $background_green = mt_rand(0, 255);
+            $background_blue = mt_rand(0, 255); 
+            $background_color = imagecolorallocate($image, $background_red, $background_green, $background_blue); 
+            $noise_color = imagecolorallocate($image, abs(100 - $background_red), abs(100 - $background_green), abs(100 - $background_blue)); 
+            $text_color = imagecolorallocate($image, 255 - $background_red, 255 - $background_green, 255 - $background_blue); 
+        
+            // generate random dots in background 
+            for($i = 0; $i < $width * $height / 3; $i++) { 
+                imagefilledellipse($image, mt_rand(0, $width), mt_rand(0, $height), 1, 1, $noise_color); 
+            } 
+        
+            // generate random lines in background
+            for($i = 0; $i < $width * $height / 150; $i++) { 
+                imageline($image, mt_rand(0, $width), mt_rand(0, $height), mt_rand(0, $width), mt_rand(0, $height), $noise_color); 
+            } 
+        
+            // set random colors
+            $white_pixel = imagecolorallocate($image, abs(100 - $background_red), abs(100 - $background_green), abs(100 - $background_blue)); 
+            $red_pixel = imagecolorallocate($image, abs(100 - $background_red), abs(100 - $background_green), abs(100 - $background_blue)); 
+        
+            // Draw a dashed line, 5 red pixels, 5 white pixels
+            $style = [$red_pixel, $red_pixel, $red_pixel, $rred_pixel, $red_pixel, $white_pixel, $white_pixel, $white_pixel, $white_pixel, $white_pixel]; 
+            imagesetstyle($image, $style); 
+            imageline($image, 0, 0, $width, $height, IMG_COLOR_STYLED); 
+            imageline($image, $width, 0, 0, $height, IMG_COLOR_STYLED); 
+        
+            // create random polygon points
+            $values = [
+                mt_rand(0, $width), mt_rand(0, $height), 
+                mt_rand(0, $height), mt_rand(0, $width), 
+                mt_rand(0, $width), mt_rand(0, $height), 
+                mt_rand(0, $height), mt_rand(0, $width), 
+                mt_rand(0, $width), mt_rand(0, $height), 
+                mt_rand(0, $height), mt_rand(0, $width), 
+                mt_rand(0, $width), mt_rand(0, $height), 
+                mt_rand(0, $height), mt_rand(0, $width), 
+                mt_rand(0, $width), mt_rand(0, $height), 
+                mt_rand(0, $height), mt_rand(0, $width), 
+                mt_rand(0, $width), mt_rand(0, $height), 
+                mt_rand(0, $height), mt_rand(0, $width),
+            ]; 
+        
+            // create Random Colors then set it to $clr
+            $red_random = abs(100 - mt_rand(0, 255)); 
+            $green_random = abs(100 - mt_rand(0, 255)); 
+            $blue_random = abs(100 - mt_rand(0, 255)); 
+            $clr = imagecolorallocate($image, $red_random, $green_random, $blue_random); 
+        
+            // create filled polygon with random points 
+            imagefilledpolygon($image, $values, 6, $clr); 
+        
+            $textbox = imagettfbbox($font_size, 0, $this->font, $code) or die('Error in imagettfbbox function'); 
+            $x = ($width - $textbox[4]) / 2; 
+            $y = ($height - $textbox[5]) / 2; 
+            imagettftext($image, $font_size, 0, $x, $y, $text_color, $this->font, $code) or die('Error in imagettftext function'); 
+        
+            // pretty it 
+            imageantialias($image, 100); 
+            imagealphablending($image, 1); 
+            imagelayereffect($image, IMG_EFFECT_OVERLAY); 
+        
+            // output captcha image to browser
+            header('Content-Type: image/jpeg'); 
+            imagejpeg($image); 
+            imagedestroy($image);
         }
     }

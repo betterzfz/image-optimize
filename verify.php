@@ -21,43 +21,41 @@
     <body>
         <div class="container">
 
-            <form class="form-verify" action="./index.php" method="post">
+            <form class="form-horizontal form-verify" role="form" action="./index.php" method="post">
                 <h2 class="form-verify-heading">验证</h2>
-                <label for="verify-code" class="sr-only">验证码</label>
-                <input id="verify-code" class="form-control" name="verify_code" placeholder="验证码" required="" autofocus="">
-                <img src="./captcha.php">
-                <button class="btn btn-lg btn-primary btn-block" type="submit">验证</button>
+                <div class="form-group">
+                    <label for="identification-number" class="col-sm-3 control-label">识别码</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="identification-number" name="identification_number" placeholder="识别码" required="" autofocus="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="verify-code" class="col-sm-3 control-label">验证码</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="verify-code" placeholder="验证码" name="verify_code" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <img src="./captcha.php" id="captcha-image">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-primary">验证</button>
+                    </div>
+                </div>
             </form>
 
-<form class="form-horizontal form-verify" role="form">
-    <h2 class="form-verify-heading">验证</h2>
-    <div class="form-group">
-    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-    <div class="col-sm-10">
-    <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-    </div>
-    </div>
-    <div class="form-group">
-    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-    <div class="col-sm-10">
-    <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-    </div>
-    </div>
-    <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-    <div class="checkbox">
-    <label>
-    <input type="checkbox"> Remember me
-    </label>
-    </div>
-    </div>
-    </div>
-    <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-    <button type="submit" class="btn btn-default">Sign in</button>
-    </div>
-    </div>
-</form>
+            <div class="row">
+                <?php if ($_GET['message']): ?>
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <strong>Warning!</strong><?= $_GET['message'] ?>
+                </div>
+                <?php endif; ?>
+            </div>
+
         </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -66,7 +64,9 @@
         <script src="./assets/js/bootstrap.min.js"></script>
         <script type="text/javascript">
             $(() => {
-                
+                $('#captcha-image').click(function () {
+                    $(this).attr('src', `./captcha.php?version=${Math.random()}`);
+                })
             });
         </script>
     </body>

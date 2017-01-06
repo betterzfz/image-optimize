@@ -92,6 +92,13 @@
             }
         }
 
+        /**
+         * generate captcha image
+         * @param $width the width of captcha image.
+         * @param $height the height of captcha image.
+         * @param $code the verify code.
+         * @stone
+         */
         public function generate_captcha_image ($width, $height, $code) {
             $font_size = $height * 0.5; 
             $image = imagecreate($width, $height) or die('Cannot initialize new GD image stream'); 

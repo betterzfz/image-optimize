@@ -1,3 +1,18 @@
+<?php
+    session_start();
+    if (!$_SESSION['verify_code']) {
+        header('Location:./verify.php');
+    }
+    if (is_array($_POST) && !empty($_POST)) {
+        $common_config = json_decode(file_get_contents('./config/common.json'), true);
+        if ($_POST['identification_number'] != $common_config['identification_number']) {
+            header('Location:./verify.php?message=invalid identification number');
+        }
+        if ($_POST['verify_code'] != $_SESSION['verify_code']) {
+            header('Location:./verify.php?message=invalid verify code');
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>

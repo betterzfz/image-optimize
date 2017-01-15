@@ -54,6 +54,7 @@
                     <ul class="nav nav-sidebar">
                         <li class="active"><a href="/">for directory</a></li>
                         <li><a href="./for_file.php">for file</a></li>
+                        <li><a href="./for_unfinished.php">for unfinished</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -128,7 +129,7 @@
         </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="./assets/js/jquery.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="./assets/js/bootstrap.min.js"></script>
         <script type="text/javascript">

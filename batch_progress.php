@@ -1,8 +1,5 @@
 <?php
     if (is_array($_POST) && !empty($_POST)) {
-        if (!$_POST['source_directory']) {
-            echo json_encode(['code' => -1, 'message' => 'no source_directory']);exit;
-        }
         if (!$_POST['destination_directory']) {
             echo json_encode(['code' => -1, 'message' => 'no destination_directory']);exit;
         }
@@ -25,7 +22,7 @@
             $redis->incr('total_handled_count');
             $redis->incr('total_success_count');
         } else {
-            file_put_contents('./log.txt', date('Y-m-d H:i:s').':'.json_encode($resample_res)."\n", FILE_APPEND);
+            file_put_contents('./log.txt', date('Y-m-d H:i:s').':'.$file['absolute_path_name'].':'.json_encode($resample_res)."\n", FILE_APPEND);
             $redis->incr('total_handled_count');
             $redis->incr('total_failure_count');
         }

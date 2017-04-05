@@ -42,6 +42,11 @@
                     $source_image = imagecreatefromjpeg($source_name);
                     $generate_func = 'imagejpeg';
                     break;
+                case 'image/bmp': case 'image/x-ms-bmp':
+                    $source_image = imagecreatefrombmp($source_name);
+                    $generate_func = 'imagebmp';
+                    $quality = TRUE;
+                    break;
                 default:
                     $source_image = false;
             }

@@ -1,4 +1,5 @@
 <?php
+    ini_set('memory_limit', '1024M');
     if (is_array($_POST) && !empty($_POST)) {
         if (!$_POST['destination_directory']) {
             echo json_encode(['code' => -1, 'message' => 'no destination_directory']);exit;

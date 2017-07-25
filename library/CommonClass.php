@@ -21,7 +21,7 @@
          * otherwise you will get a string is made up of case letters and numbers
          * @stone
          */
-        public function get_random_string ($length, $flag) {
+        public function get_random_string ($length, $flag = 0) {
             $candidate_characters = '';
             switch ($flag) {
                 case 1:

@@ -48,7 +48,7 @@
             </form>
 
             <div class="row">
-                <?php if ($_GET['message']): ?>
+                <?php if (!empty($_GET['message'])): ?>
                 <div class="alert alert-danger alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     <strong>Warning!</strong><?= $_GET['message'] ?>

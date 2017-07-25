@@ -2,7 +2,7 @@
     /*$redis = new Redis();
     $redis->connect('127.0.0.1', 6379);
     $redis->delete(['file_count', 'handled_count', 'success_count', 'failure_count']);
-    $redis->close();*/
+    $redis->close();
     echo PHP_VERSION;
     echo PHP_VERSION >= '6.2.0';
     ini_set('memory_limit', '128M');
@@ -16,4 +16,5 @@
         echo json_encode(['code' => 0, 'message' => 'handle file successfully']);exit;
     } else {
         echo json_encode(['code' => -1, 'message' => 'handle file failure']);exit;
-    }
+    }*/
+    phpinfo();

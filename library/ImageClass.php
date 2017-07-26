@@ -135,7 +135,7 @@
             $red_pixel = imagecolorallocate($image, abs(100 - $background_red), abs(100 - $background_green), abs(100 - $background_blue)); 
         
             // Draw a dashed line, 5 red pixels, 5 white pixels
-            $style = [$red_pixel, $red_pixel, $red_pixel, $rred_pixel, $red_pixel, $white_pixel, $white_pixel, $white_pixel, $white_pixel, $white_pixel]; 
+            $style = [$red_pixel, $red_pixel, $red_pixel, $red_pixel, $red_pixel, $white_pixel, $white_pixel, $white_pixel, $white_pixel, $white_pixel]; 
             imagesetstyle($image, $style); 
             imageline($image, 0, 0, $width, $height, IMG_COLOR_STYLED); 
             imageline($image, $width, 0, 0, $height, IMG_COLOR_STYLED); 
@@ -171,9 +171,9 @@
             imagettftext($image, $font_size, 0, $x, $y, $text_color, $this->font, $code) or die('Error in imagettftext function'); 
         
             // pretty it 
-            imageantialias($image, 100); 
+            /* imageantialias($image, 100); 
             imagealphablending($image, 1); 
-            imagelayereffect($image, IMG_EFFECT_OVERLAY); 
+            imagelayereffect($image, IMG_EFFECT_OVERLAY);  */
         
             // output captcha image to browser
             header('Content-Type: image/jpeg'); 
